@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.2;
+  }
+}
+
+@layer components {
+  .card-shadow {
+    @apply shadow-soft;
+  }
+  
+  .btn-primary {
+    @apply bg-empire-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-empire-700 transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-empire-600 px-6 py-3 rounded-xl font-medium border border-empire-600 hover:bg-empire-50 transition-all duration-200 shadow-md hover:shadow-lg;
+  }
+}
