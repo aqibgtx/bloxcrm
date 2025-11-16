@@ -233,7 +233,7 @@ export default function Finance() {
                 <DollarSign className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Paid</p>
+                <p className="text-sm text-gray-500">Revenue</p>
                 <p className="text-xl font-bold text-gray-800">{formatCurrency(stats.totalRevenue)}</p>
               </div>
             </div>
@@ -250,7 +250,7 @@ export default function Finance() {
                 <TrendingDown className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Total Cost</p>
+                <p className="text-sm text-gray-500">Cost</p>
                 <p className="text-xl font-bold text-gray-800">{formatCurrency(stats.totalCost)}</p>
               </div>
             </div>
@@ -423,7 +423,7 @@ export default function Finance() {
                       <p className="text-lg font-bold text-green-700">{formatCurrency(project.total_revenue)}</p>
                     </div>
                     <div className="bg-red-50 rounded-xl p-4 text-center">
-                      <p className="text-sm text-red-600 font-medium">Total Cost</p>
+                      <p className="text-sm text-red-600 font-medium">Cost</p>
                       <p className="text-lg font-bold text-red-700">{formatCurrency(project.total_cost)}</p>
                     </div>
                   </>
@@ -438,7 +438,7 @@ export default function Finance() {
                       <p className="text-lg font-bold text-green-700">{formatCurrency(project.total_revenue)}</p>
                     </div>
                     <div className="bg-red-50 rounded-xl p-4 text-center">
-                      <p className="text-sm text-red-600 font-medium">Total Cost</p>
+                      <p className="text-sm text-red-600 font-medium">Cost</p>
                       <p className="text-lg font-bold text-red-700">{formatCurrency(project.total_cost)}</p>
                     </div>
                     <div className="bg-yellow-50 rounded-xl p-4 text-center">
