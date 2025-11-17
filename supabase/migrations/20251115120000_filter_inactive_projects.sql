@@ -45,11 +45,11 @@ BEGIN
   stats := (stats::jsonb || json_build_object(
     'monthlyOutreaches', (
       SELECT COALESCE(SUM(
-        CASE
-          WHEN dt.title ~* 'ot\s*(\d+)' THEN (regexp_match(dt.title, 'ot\s*(\d+)', 'i'))[1]::int
-          WHEN dt.title ~* 'outreach\s*(\d+)' THEN (regexp_match(dt.title, 'outreach\s*(\d+)', 'i'))[1]::int
-          ELSE 0
-        END
+        COALESCE(
+          (regexp_match(dt.title, '(?:ot|outreach)[\s\/:,-]*(\d+)', 'i'))[1]::int,
+          (regexp_match(dt.title, '(\d+)[\s\/:,-]*(?:ot|outreach)', 'i'))[1]::int,
+          0
+        )
       ), 0)
       FROM daily_tasks dt
       JOIN goals g ON dt.goal_id = g.id
@@ -60,11 +60,11 @@ BEGIN
     ),
     'totalOutreaches', (
       SELECT COALESCE(SUM(
-        CASE
-          WHEN dt.title ~* 'ot\s*(\d+)' THEN (regexp_match(dt.title, 'ot\s*(\d+)', 'i'))[1]::int
-          WHEN dt.title ~* 'outreach\s*(\d+)' THEN (regexp_match(dt.title, 'outreach\s*(\d+)', 'i'))[1]::int
-          ELSE 0
-        END
+        COALESCE(
+          (regexp_match(dt.title, '(?:ot|outreach)[\s\/:,-]*(\d+)', 'i'))[1]::int,
+          (regexp_match(dt.title, '(\d+)[\s\/:,-]*(?:ot|outreach)', 'i'))[1]::int,
+          0
+        )
       ), 0)
       FROM daily_tasks dt
       WHERE dt.completed = true
@@ -87,11 +87,11 @@ BEGIN
         WHEN 6 THEN 'S'
       END as day_letter,
       COALESCE(SUM(
-        CASE
-          WHEN dt.title ~* 'ot\s*(\d+)' THEN (regexp_match(dt.title, 'ot\s*(\d+)', 'i'))[1]::int
-          WHEN dt.title ~* 'outreach\s*(\d+)' THEN (regexp_match(dt.title, 'outreach\s*(\d+)', 'i'))[1]::int
-          ELSE 0
-        END
+        COALESCE(
+          (regexp_match(dt.title, '(?:ot|outreach)[\s\/:,-]*(\d+)', 'i'))[1]::int,
+          (regexp_match(dt.title, '(\d+)[\s\/:,-]*(?:ot|outreach)', 'i'))[1]::int,
+          0
+        )
       ), 0) as outreach_count
     FROM (
       SELECT generate_series(0, 6) as day_num

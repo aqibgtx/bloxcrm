@@ -751,10 +751,7 @@ export default function GoalDetail() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="bg-white rounded-2xl shadow-lg overflow-hidden"
         >
-            <div className="p-6 border-b border-gray-200 bg-gray-50">
-              <h3 className="text-lg font-semibold text-gray-800">Task Calendar</h3>
-              <p className="text-sm text-gray-500">View and manage tasks in calendar view</p>
-            </div>
+
 
           <div className="p-6">
             {/* Calendar Rendering */}
