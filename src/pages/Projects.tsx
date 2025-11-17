@@ -123,7 +123,7 @@ export default function Projects() {
             amount
           )
         `)
-        .order('created_at', { ascending: false })
+        .order('due_date', { ascending: false, nullsFirst: false })
 
       if (error) throw error
 
@@ -201,14 +201,16 @@ export default function Projects() {
 
     if (selectedMonth !== 'all') {
       filtered = filtered.filter(project => {
-        const projectMonth = new Date(project.created_at).getMonth() + 1
+        if (!project.due_date) return false
+        const projectMonth = new Date(project.due_date).getMonth() + 1
         return projectMonth.toString() === selectedMonth
       })
     }
 
     if (selectedYear !== 'all') {
       filtered = filtered.filter(project => {
-        const projectYear = new Date(project.created_at).getFullYear()
+        if (!project.due_date) return false
+        const projectYear = new Date(project.due_date).getFullYear()
         return projectYear.toString() === selectedYear
       })
     }
@@ -431,7 +433,7 @@ export default function Projects() {
                       {project.clients?.name || 'No client assigned'}
                     </p>
                     <p className="text-sm text-gray-800 font-semibold">
-                      {formatDate(project.created_at)}
+                      Due: {project.due_date ? formatDate(project.due_date) : 'No due date'}
                     </p>
                   </div>
                 </div>

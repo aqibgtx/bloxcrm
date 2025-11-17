@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Plus, Target, Calendar, CheckCircle, Circle, Edit, Trash2, ArrowRight, Info } from 'lucide-react'
+import { Plus, Target, Calendar, CheckCircle, Circle, Edit, Trash2, ArrowRight, Info, Clock } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { formatDate, getLocalDateString } from '../utils/dateFormat'
@@ -28,6 +28,8 @@ interface DailyTask {
   description: string | null
   completed: boolean
   date: string
+  start_time: string | null
+  end_time: string | null
 }
 
 export default function Goals() {
@@ -99,10 +101,16 @@ export default function Goals() {
         .from('daily_tasks')
         .select('*')
         .eq('date', today)
-        .order('created_at', { ascending: false })
 
       if (error) throw error
-      setDailyTasks(data || [])
+
+      // Sort: completed tasks first, then uncompleted
+      const sortedData = (data || []).sort((a, b) => {
+        if (a.completed === b.completed) return 0
+        return a.completed ? -1 : 1
+      })
+
+      setDailyTasks(sortedData)
     } catch (error) {
       console.error('Error fetching daily tasks:', error)
     }
@@ -180,7 +188,15 @@ export default function Goals() {
 
   const toggleTask = async (taskId: string, completed: boolean) => {
     try {
-      setDailyTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: !completed } : t))
+      // Optimistically update and re-sort immediately
+      setDailyTasks(prev => {
+        const updated = prev.map(t => t.id === taskId ? { ...t, completed: !completed } : t)
+        // Sort: completed tasks first, then uncompleted
+        return updated.sort((a, b) => {
+          if (a.completed === b.completed) return 0
+          return a.completed ? -1 : 1
+        })
+      })
 
       const { error } = await supabase
         .from('daily_tasks')
@@ -190,7 +206,14 @@ export default function Goals() {
       if (error) throw error
     } catch (error) {
       console.error('Error toggling task:', error)
-      setDailyTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed } : t))
+      // Revert on error
+      setDailyTasks(prev => {
+        const reverted = prev.map(t => t.id === taskId ? { ...t, completed } : t)
+        return reverted.sort((a, b) => {
+          if (a.completed === b.completed) return 0
+          return a.completed ? -1 : 1
+        })
+      })
     }
   }
 
@@ -251,6 +274,16 @@ export default function Goals() {
   const getTypeColor = (type: string) => {
     const typeConfig = goalTypes.find(t => t.value === type)
     return typeConfig?.color || '#d97706'
+  }
+
+  const formatTime = (timeString: string | null): string => {
+    if (!timeString) return ''
+    // timeString is in format "HH:MM:SS"
+    const [hoursStr, minutes] = timeString.split(':')
+    const hours = parseInt(hoursStr, 10)
+    const period = hours >= 12 ? 'PM' : 'AM'
+    const hours12 = hours % 12 || 12
+    return `${hours12}:${minutes} ${period}`
   }
 
   const groupedGoals = {
@@ -461,8 +494,9 @@ export default function Goals() {
 
             <div className="space-y-3">
               {dailyTasks.length > 0 ? dailyTasks.map((task, index) => (
-                <div
+                <motion.div
                   key={task.id}
+                  layoutId={task.id}
                   className={`flex items-start space-x-4 p-4 border rounded-xl transition-all ${
                     task.completed
                       ? 'bg-green-50 border-green-200'
@@ -477,13 +511,25 @@ export default function Goals() {
                   >
                     {task.completed ? <CheckCircle size={20} /> : <Circle size={20} />}
                   </button>
-                  
+
                   <div className="flex-1">
-                    <h4 className={`font-medium ${
-                      task.completed ? 'text-green-800 line-through' : 'text-gray-800'
-                    }`}>
-                      {task.title}
-                    </h4>
+                    <div className="flex items-center justify-between">
+                      <h4 className={`font-medium ${
+                        task.completed ? 'text-green-800 line-through' : 'text-gray-800'
+                      }`}>
+                        {task.title}
+                      </h4>
+                      {(task.start_time || task.end_time) && (
+                        <div className="flex items-center space-x-1 text-sm text-gray-600">
+                          <Clock size={14} />
+                          <span>
+                            {task.start_time && formatTime(task.start_time)}
+                            {task.start_time && task.end_time && ' - '}
+                            {task.end_time && formatTime(task.end_time)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                     {task.description && (
                       <p className={`text-sm mt-1 ${
                         task.completed ? 'text-green-600' : 'text-gray-600'
@@ -497,7 +543,7 @@ export default function Goals() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )) : (
                 <div className="text-center py-12 text-gray-500">
                   <CheckCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />

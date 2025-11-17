@@ -38,7 +38,12 @@ export default function TaskCalendarModal({
 
   const formatTime = (timeStr: string | null) => {
     if (!timeStr) return ''
-    return timeStr.slice(0, 5)
+    // timeStr is in format "HH:MM:SS"
+    const [hoursStr, minutes] = timeStr.split(':')
+    const hours = parseInt(hoursStr, 10)
+    const period = hours >= 12 ? 'PM' : 'AM'
+    const hours12 = hours % 12 || 12
+    return `${hours12}:${minutes} ${period}`
   }
 
   const formatDateDisplay = (date: Date) => {
