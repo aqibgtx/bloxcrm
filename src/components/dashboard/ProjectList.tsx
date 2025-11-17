@@ -127,7 +127,7 @@ export default function ProjectList({ onLoaded, data: propData }: ProjectListPro
               </div>
               {project.due_date && (
                 <p className="text-xs text-gray-500">
-                  Due: {formatDate(project.due_date)}
+                  {formatDate(project.due_date)}
                 </p>
               )}
             </div>

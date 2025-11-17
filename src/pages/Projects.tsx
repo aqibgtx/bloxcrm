@@ -433,7 +433,7 @@ export default function Projects() {
                       {project.clients?.name || 'No client assigned'}
                     </p>
                     <p className="text-sm text-gray-800 font-semibold">
-                      Due: {project.due_date ? formatDate(project.due_date) : 'No due date'}
+                      {project.due_date ? formatDate(project.due_date) : 'No due date'}
                     </p>
                   </div>
                 </div>
@@ -658,7 +658,7 @@ export default function Projects() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Due Date
+                Date
               </label>
               <input
                 type="date"
@@ -829,7 +829,7 @@ export default function Projects() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Due Date
+                Date
               </label>
               <input
                 type="date"
