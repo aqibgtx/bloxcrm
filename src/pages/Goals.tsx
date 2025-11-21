@@ -222,6 +222,7 @@ export default function Goals() {
 
     try {
       setGoals(prev => prev.filter(g => g.id !== goalId))
+      setDailyTasks(prev => prev.filter(task => task.goal_id !== goalId))
 
       const { error } = await supabase
         .from('goals')
@@ -229,9 +230,17 @@ export default function Goals() {
         .eq('id', goalId)
 
       if (error) throw error
+
+      const { error: deleteTasksError } = await supabase
+        .from('daily_tasks')
+        .delete()
+        .eq('goal_id', goalId)
+
+      if (deleteTasksError) throw deleteTasksError
     } catch (error) {
       console.error('Error deleting goal:', error)
       fetchGoals()
+      fetchTodaysTasks()
     }
   }
 

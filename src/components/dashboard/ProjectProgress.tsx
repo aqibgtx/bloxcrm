@@ -36,7 +36,7 @@ export default function ProjectProgress({ onLoaded, data: propData }: ProjectPro
     } else if (selectedProject) {
       fetchProjectProgress(selectedProject)
     }
-  }, [selectedProject])
+  }, [selectedProject, projects])
 
   const fetchCurrentMonthProjects = async () => {
     try {
